@@ -10,7 +10,7 @@ public class Character : MonoBehaviour
 
     void Update()
     {
-        if(Input.GetMouseButton(0))
+        if(LevelState.instance.levelStarted && Input.GetMouseButtonDown(0))
         {
             Vector3 mousePosFar = new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.farClipPlane);
             Vector3 mousePosNear = new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.nearClipPlane);
