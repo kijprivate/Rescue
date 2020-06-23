@@ -7,6 +7,12 @@ public class Character : MonoBehaviour
     [SerializeField] private float speed = 3f;
 
     private Coroutine moveCoroutine = null;
+    private Transform myTransform;
+
+    private void Awake()
+    {
+        myTransform = transform;    
+    }
 
     void Update()
     {
@@ -30,6 +36,12 @@ public class Character : MonoBehaviour
                 moveCoroutine = StartCoroutine(MoveTowards(hit.transform.position));
             }
         }
+
+        if(myTransform.position.y < -5f)
+        {
+            EventManager.RaiseEventCharacterDestroyed();
+            Destroy(gameObject);
+        }
     }
 
     private IEnumerator MoveTowards(Vector3 hitPosition)
@@ -47,6 +59,7 @@ public class Character : MonoBehaviour
     {
         if(other.gameObject.CompareTag("Spikes"))
         {
+            EventManager.RaiseEventCharacterDestroyed();
             Destroy(gameObject);
         }
     }

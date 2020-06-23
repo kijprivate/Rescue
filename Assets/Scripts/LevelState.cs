@@ -7,6 +7,7 @@ public class LevelState : MonoBehaviour
 {
     public int currentLevel = 1;
     public bool levelStarted = false;
+    public int charactersLeft;
 
     #region static instance
     private static LevelState _instance;
@@ -23,11 +24,38 @@ public class LevelState : MonoBehaviour
     {
         _instance = this;
         currentLevel = SceneManager.GetActiveScene().buildIndex + 1;
+        charactersLeft = FindObjectsOfType<Character>().Length;
     }
 
-    //Invoked in main canvas On click 
+    private void OnEnable()
+    {
+        EventManager.SubscribeToEventCharacterDestroyed(OnCharacterDestroyed);
+    }
+
+    private void OnDisable()
+    {
+        EventManager.UnsubscribeFromEventCharacterDestroyed(OnCharacterDestroyed);
+    }
+
+    //Invoked in main canvas OnClick 
     public void StartLevel()
     {
         levelStarted = true;
+    }
+
+    //Invoked in game over menu OnClick
+    public void RestartLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    private void OnCharacterDestroyed()
+    {
+        charactersLeft--;
+        if(charactersLeft <= 0)
+        {
+            Debug.LogError("Game over");
+            EventManager.RaiseEventGameOver();
+        }
     }
 }
